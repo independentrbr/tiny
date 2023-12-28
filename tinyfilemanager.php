@@ -321,37 +321,6 @@ if ($ip_ruleset != 'OFF') {
     }
 }
 
-// Checking if the user is logged in or not. If not, it will show the login form.
-if ($use_auth) {
-    if (isset($_SESSION[FM_SESSION_ID]['logged'], $auth_users[$_SESSION[FM_SESSION_ID]['logged']])) {
-        // Logged
-    } elseif (isset($_POST['fm_usr'], $_POST['fm_pwd'], $_POST['token'])) {
-        // Logging In
-        sleep(1);
-        if(function_exists('password_verify')) {
-            if (isset($auth_users[$_POST['fm_usr']]) && isset($_POST['fm_pwd']) && password_verify($_POST['fm_pwd'], $auth_users[$_POST['fm_usr']]) && verifyToken($_POST['token'])) {
-                $_SESSION[FM_SESSION_ID]['logged'] = $_POST['fm_usr'];
-                fm_set_msg(lng('You are logged in'));
-                fm_redirect(FM_SELF_URL);
-            } else {
-                unset($_SESSION[FM_SESSION_ID]['logged']);
-                fm_set_msg(lng('Login failed. Invalid username or password'), 'error');
-                fm_redirect(FM_SELF_URL);
-            }
-        } else {
-            fm_set_msg(lng('password_hash not supported, Upgrade PHP version'), 'error');;
-        }
-    } else {
-        // Form
-        unset($_SESSION[FM_SESSION_ID]['logged']);
-        fm_show_header_login();
-        ?>
-        <?php
-        fm_show_footer_login();
-        exit;
-    }
-}
-
 // update root path
 if ($use_auth && isset($_SESSION[FM_SESSION_ID]['logged'])) {
     $root_path = isset($directories_users[$_SESSION[FM_SESSION_ID]['logged']]) ? $directories_users[$_SESSION[FM_SESSION_ID]['logged']] : $root_path;
